@@ -16,7 +16,7 @@ for i = 1:length(NMatrix)
             end
         end
     end
-    %Calculate magnetization and dispersion
+    %Calculate magnetization
     m(i) = sum(sum(a))/N^2;
     m2(i) = m(i)^2; %This will always just be 1/N so this is not the way to do this
     s = sprintf('Grid of %d x %d had magnetization %f', N, N, m(i));
