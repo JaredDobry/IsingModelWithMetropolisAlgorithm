@@ -1,16 +1,19 @@
 function [avgE, avgM] = Metropolis(width, height, iterations, J, Beta)
 %METROPOLIS performs metropolis algorithm starting with matrix of all 1
 matrix = randi([0,1], [height, width]) .* 2 - 1;
-totalE = 0;
-totalM = 0;
 
-totalE = totalE + calcEnergy(matrix, J);
-totalM = totalM + calcMagnetization(matrix);
+E = calcEnergy(matrix, J);
+M = calcMagnetization(matrix);
+
+totalE = E;
+totalM = M;
 
 for i=1:iterations
-   matrix=MetropolisStep(matrix, J, Beta);
-   totalE = totalE + calcEnergy(matrix, J);
-    totalM = totalM + calcMagnetization(matrix);
+   [matrix, deltaE, deltaM] = MetropolisStep(matrix, J, Beta);
+   E = E + deltaE;
+   M = M + deltaM;
+   totalE = totalE + E;
+   totalM = totalM + M;
 end
 
 resultingMatrix = matrix;

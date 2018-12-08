@@ -1,17 +1,21 @@
 %Performs a single interation of the metropolis algorithm
-function [newMatrix] = MetropolisStep(matrix, J, Beta)
+function [newMatrix, deltaE, deltaM] = MetropolisStep(matrix, J, Beta)
     [height, width] = size(matrix);
     x = randi([1,width]);%pick random coordinate in matrix
     y = randi([1,height]);
     
-    deltaE = CalcEnergyDiff(matrix, x, y, J);
+    deltaM = 0;
+    deltaE = 0;
+    potentialDeltaE = CalcEnergyDiff(matrix, x, y, J);
     probabilityFlip = 1;
-    if deltaE > 1
-        probabilityFlip = exp(-1*Beta*deltaE);
+    if potentialDeltaE > 1
+        probabilityFlip = exp(-1*Beta*potentialDeltaE);
     end
     
     if rand() < probabilityFlip
         matrix(y,x) = -matrix(y,x);
+        deltaM = 2 * matrix(y, x) / (width*height);
+        deltaE = potentialDeltaE;
     end
     
     newMatrix=matrix;
