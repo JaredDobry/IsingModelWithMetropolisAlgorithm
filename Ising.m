@@ -1,17 +1,17 @@
 clear all;
 close all;
 %Decide N for run
-Energy = figure(1);
-Magnetization = figure(2);
-N = 10;
+N = 20;
 J = 1;
-Tarray = [10 50 100 200 300 400 500 600 800 1000]; %K
+Tarray = [10 20 30 40 50 100 200 300 400 500 600 800 1000]; %K
 Kb = 1.38064852*10^(-23); %m^2 kg s^-2 K^-1
 %Begin metropolis algorithm
 for j = 1:length(Tarray)
     T = Tarray(j);
     B = 1/(T*Kb);
     a = ones(N,N);
+    clear E;
+    clear M;
     for i = 1:(N^2*10)
         %Pick a random particle
         row = randi([1, N]);
@@ -55,18 +55,6 @@ for j = 1:length(Tarray)
         end
         %Calculate E(r)
         sumE = 0;
-    %     for x = 1:N
-    %         for y = 1:N
-    %             sigI = a(x,y);
-    %             for z = 1:N
-    %                 for w = 1:N
-    %                     if ~(z == x && w == y) %Make sure we dont check same element
-    %                         sumE = sumE + sigI * a(z,w);
-    %                     end
-    %                 end
-    %             end
-    %         end
-    %     end
         for x = 1:N-1
             for y = 1:N-1
                 sumE = sumE + a(x,y) * a(x+1,y) + a(x,y) * a(x,y+1);
@@ -75,22 +63,23 @@ for j = 1:length(Tarray)
         E(i) = -J*sumE;
         %Calculate M(r)
         M(i) = sum(sum(a))/N^2;
-        %Running average plot
-        meanEnergy(i,j) = sum(E)/length(E);
-        meanMagnetization(i,j) = sum(M)/length(M);
-%         figure(Energy);
-%         plot(meanEnergy,'o');
-%         title('Mean Energy'); xlabel('Iteration number'); ylabel('Energy (kgm/s^2)');
-%         drawnow;
-%         figure(Magnetization);
-%         plot(meanMagnetization,'o'); 
-%         title('Mean Magnetization'); xlabel('Iteration number'); ylabel('Magnetization (unit)');
-%         drawnow;
+        %Running average
+        meanEnergy(j,i) = sum(E)/length(E);
+        meanMagnetization(j,i) = sum(M)/length(M);
     end
     disp(j);
 end
-plot(meanEnergy); 
-legend('10K','50K','100K','200K','300K','400K','500K','600K','800K','1000K','Location','southeast');
 figure;
-plot(meanMagnetization);
-legend('10K','50K','100K','200K','300K','400K','500K','600K','800K','1000K');
+hold on;
+for i = 1:length(Tarray)
+    plot(meanEnergy(i,:),'.');
+end
+hold off;
+legend('10K', '20K', '30K', '40K','50K','100K','200K','300K','400K','500K','600K','800K','1000K','Location','southeast');
+figure;
+hold on;
+for i = 1:length(Tarray)
+    plot(meanMagnetization(i,:),'.');
+end
+hold off;
+legend('10K', '20K', '30K', '40K','50K','100K','200K','300K','400K','500K','600K','800K','1000K');
