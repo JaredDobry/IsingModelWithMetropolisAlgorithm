@@ -16,7 +16,7 @@ for i=1:iterations
    totalM = totalM + M;
 end
 
-resultingMatrix = matrix;
+resultingMatrix = matrix
 avgE = totalE / (iterations + 1);
 avgM = totalM / (iterations + 1);
 end
