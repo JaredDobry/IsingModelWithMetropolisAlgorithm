@@ -1,14 +1,14 @@
 %Performs a single interation of the metropolis algorithm
-function [newMatrix, deltaE, deltaM] = MetropolisStep(matrix, J, Beta)
+function [newMatrix, deltaE, deltaM] = MetropolisStep(matrix, J, Beta, H)
     [height, width] = size(matrix);
     x = randi([1,width]);%pick random coordinate in matrix
     y = randi([1,height]);
     
     deltaM = 0;
     deltaE = 0;
-    potentialDeltaE = CalcEnergyDiff(matrix, x, y, J);
+    potentialDeltaE = CalcEnergyDiff(matrix, x, y, J, H);
     probabilityFlip = 1;
-    if potentialDeltaE > 1
+    if potentialDeltaE > 0
         probabilityFlip = exp(-1*Beta*potentialDeltaE);
     end
     
@@ -23,7 +23,7 @@ function [newMatrix, deltaE, deltaM] = MetropolisStep(matrix, J, Beta)
 end
 
 %This function calculates the energy change in energy from multiplying the value %matrix(x,y) by -1
-function [diff] = CalcEnergyDiff(matrix, x, y, J) %J is the parameter in the ising model
+function [diff] = CalcEnergyDiff(matrix, x, y, J, H) %J is the parameter in the ising model
     [height, width] = size(matrix);
     %for those of you who believe 1 indexing arrays is good, look at the next two lines. The jig is up
     xs = mod([x-1, x, x, x+1]-1,width) + 1; %x coordinates surrouding cell
@@ -32,6 +32,6 @@ function [diff] = CalcEnergyDiff(matrix, x, y, J) %J is the parameter in the isi
     
     sumNeighbors = sum(matrix(places)); %sum of the four neighboring values in the matrix
     
-    diff = 2 * J * matrix(y,x) * sumNeighbors; %formula for deltaE2d from lecture 15 notes
+    diff = 2 * J * matrix(y,x) * sumNeighbors +  H*2*matrix(y,x); %formula for deltaE2d from lecture 15 notes
 end
 
